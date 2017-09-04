@@ -41,6 +41,10 @@ int		bbStringStartsWith( BBString *x,BBString *y );
 int		bbStringEndsWith( BBString *x,BBString *y );
 int		bbStringContains( BBString *x,BBString *y );
 
+BBString*	bbStringReverse( BBString *t);
+BBString*	bbStringSort( BBString *t);
+int		bbNextPermutation( BBString *t);
+
 BBString*bbStringConcat( BBString *x,BBString *y );
 
 BBString*	bbStringTrim( BBString *t );

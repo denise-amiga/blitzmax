@@ -51,6 +51,10 @@ String^Object{
 	-EndsWith:Int( subString:String )="bbStringEndsWith"
 	-Contains:Int( subString:String )="bbStringContains"
 	
+	-Reverse:String()="bbStringReverse"
+	-Sort:String()="bbStringSort"
+	-NextPermutation:Int()="bbNextPermutation"
+
 	-Split:String[]( separator:String )="bbStringSplit"
 	-Join:String( bits:String[] )="bbStringJoin"
 	

@@ -55,6 +55,10 @@ BBClass bbStringClass={
 	bbStringEndsWith,
 	bbStringContains,
 	
+	bbStringReverse,
+	bbStringSort,
+	bbNextPermutation,
+
 	bbStringSplit,
 	bbStringJoin,
 	
@@ -264,6 +268,61 @@ int bbStringEndsWith( BBString *x,BBString *y ){
 
 int bbStringContains( BBString *x,BBString *y ){
 	return bbStringFind( x,y,0 )!=-1;
+}
+
+BBString *bbStringReverse( BBString *str ){
+	int sz=str->length;
+	BBChar *p, *q;
+	BBString *t;
+	if( !sz ) return &bbEmptyString;
+	t=bbStringNew( sz );
+	p=str->buf;
+	q=t->buf+sz-1;
+	while(*p) *q--=*p++;
+	return t;
+}
+
+int cmpfunc ( const BBChar * a, const BBChar * b ){
+   return ( *(BBChar*)a - *(BBChar*)b );
+}
+
+BBString *bbStringSort( BBString *str){
+	int sz=str->length;
+	BBString *t;
+	if( !sz ) return &bbEmptyString;
+	t=bbStringNew( sz );
+	memcpy( t->buf, str->buf, sz*sizeof(BBChar));
+	qsort( t->buf, sz, sizeof(BBChar), cmpfunc);
+	return t;
+}
+
+int bbNextPermutation( BBString *str ){
+	int i,j,sz=str->length;
+	BBChar t;
+
+	if( !sz ) return 0;
+
+	i=sz-1;
+	while( i>0 && str->buf[i-1]>=str->buf[i] ) i--;
+
+	if( i==0 ) return 0;
+
+	j=sz-1;
+	while( str->buf[j]<=str->buf[i-1] ) j--;
+
+	t=str->buf[i-1];
+	str->buf[i-1]=str->buf[j];
+	str->buf[j]=t;
+
+	j=sz-1;
+	while( i<j ){
+		t=str->buf[i];
+		str->buf[i]=str->buf[j];
+		str->buf[j]=t;
+		i++;
+		j--;
+	}
+	return 1;
 }
 
 BBString *bbStringConcat( BBString *x,BBString *y ){
