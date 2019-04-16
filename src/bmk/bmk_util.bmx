@@ -103,6 +103,36 @@ Function Ranlib( dir$ )
 	Next
 End Function
 
+Function Optimize:Int(pathfile:String)
+?Win32
+	Local newfile:String = StripExt(pathfile) + ".org"
+	DeleteFile(newfile)
+	RenameFile(pathfile, newfile)
+	Local save:TStream = WriteStream(pathfile)
+	Local lines:String[] = LoadText(newfile).Split("~r~n")
+	For Local i:Int = 0 To lines.Length - 1
+		Local t:String = lines[i].Trim().Replace("~t", " ")
+		If t.StartsWith("jmp")
+			Local j:String = t[3..].Trim()
+			If lines[i + 1].Trim().startswith(j + ":") lines[i] = ";" + lines[i]
+		ElseIf t.StartsWith("mov")
+			Local j:String = t[3..].Trim()
+			Local op:String[] = j.Split(",")
+			If op[0] = op[1] lines[i] = ";" + lines[i]
+			j = lines[i - 1].Trim().Replace("~t", " ")
+			If j.StartsWith("mov")
+				Local k:String = j[3..].Trim()
+				Local oq:String[] = k.Split(",")
+				If op[0] = oq[1] And op[1] = oq[0] lines[i] = ";" + lines[i]
+			End If
+		End If
+		WriteLine(save, lines[i])
+		' WriteStdout lines[i] + "~r~n"
+	Next
+	Save.Close()
+?
+EndFunction
+
 Function Assemble( src$,obj$ )
 	DeleteFile obj
 	Local cmd$
@@ -211,6 +241,7 @@ Function CompileBMX( src$,obj$,opts$ )
 		EndIf
 	EndIf
 ?
+	Optimize azm
 	Assemble azm,obj
 
 End Function
